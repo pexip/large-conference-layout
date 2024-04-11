@@ -1,0 +1,53 @@
+{"configs":
+    [
+        {
+            "alias": "^(?:sip:)?gsa_([0-9a-zA-Z]{20})(?:@<domain>)?$",
+            "domain": "azure.pextest.one",
+            "type": "gsa_guest",
+            "basename": "gsa_",
+            "dialout": true,
+            "dialout_basename": "il7aud",
+            "dialout_location": "Transcoding",
+            "dialout_role": "chair",
+            "dialout_remote_display_name": "Presenters",
+            "participants_per_vmr": 2,
+            "response": {
+                "status": "success",
+                "action": "continue",
+                "result": {
+                    "service_type": "conference",
+                    "name": "gsa_conference",
+                    "service_tag": "gsa_guest",
+                    "max_pixels_per_second": "hd",
+                    "enable_overlay_text": false,
+                    "host_pin": "2323",
+                    "guest_pin": "",
+                    "ivr_theme_name": "gsaplain",
+                    "view": "one_main_zero_pips"
+                }
+            }
+        },
+        {
+            "alias": "^(?:sip:)?il7aud_([0-9a-zA-Z]{20})(?:@<domain>)?$",
+            "domain": "azure.pextest.one",
+            "type": "gsa_host",
+            "basename": "il7aud_",
+            "response": {
+                "status": "success",
+                "action": "continue",
+                "result": {
+                    "service_type": "lecture",
+                    "name": "gsa_lecture",
+                    "service_tag": "gsa_host",
+                    "max_pixels_per_second": "hd",
+                    "enable_overlay_text": true,
+                    "host_pin": "2323",
+                    "ivr_theme_name": "gsats",
+                    "guest_view": "one_main_zero_pips",
+                    "host_view": "nine_mains_zero_pips",
+                    "mute_all_guests": true
+                }
+            }
+        }
+    ]
+}

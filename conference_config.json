@@ -1,0 +1,57 @@
+{"configs":
+    [
+        {
+            "alias": "^(?:sip:)?va_([0-9a-zA-Z]{20})(?:_vmr(\\d+))?(?:@<domain>)?$",
+            "domain": "<substitute domain name here>",
+            "type": "va_guest",
+            "basename": "va_",
+            "dialout": true,
+            "dialout_basename": "vaprov",
+            "dialout_location": "<substitute Pexip dialout location here>",
+            "dialout_role": "chair",
+            "dialout_remote_display_name": "Provider",
+            "participants_per_vmr": 4,
+            "response": {
+                "status": "success",
+                "action": "continue",
+                "result": {
+                    "service_type": "lecture",
+                    "name": "va_conference",
+                    "service_tag": "va_guest",
+                    "max_pixels_per_second": "sd",
+                    "enable_overlay_text": true,
+                    "host_pin": "2323",
+                    "pin": "",
+                    "guest_pin": "",
+                    "ivr_theme_name": "Large Conference",
+                    "guest_view": "one_main_zero_pips",
+                    "host_view": "four_mains_zero_pips"
+                }
+            }
+        },
+        {
+            "alias": "^(?:sip:)?vaprov_([0-9a-zA-Z]{20})(?:@<domain>)?$",
+            "domain": "<substitute domain name here>",
+            "type": "va_host",
+            "basename": "vaprov_",
+            "response": {
+                "status": "success",
+                "action": "continue",
+                "result": {
+                    "service_type": "lecture",
+                    "name": "vaprov_lecture",
+                    "allow_guests": true,
+                    "service_tag": "va_host",
+                    "max_pixels_per_second": "fullhd",
+                    "enable_overlay_text": false,
+                    "host_pin": "2323",
+                    "pin": "2323",
+                    "ivr_theme_name": "Large Conference",
+                    "guest_view": "one_main_zero_pips",
+                    "host_view": "sixteen_mains_zero_pips",
+                    "mute_all_guests": true
+                }
+            }
+        }
+    ]
+}

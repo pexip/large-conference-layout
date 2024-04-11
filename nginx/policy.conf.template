@@ -1,0 +1,59 @@
+# policy.conf.template
+
+server_tokens               off;
+access_log                  /var/log/nginx/access.log;
+error_log                   /var/log/nginx/error.log;
+
+server {
+  server_name               .${HOSTNAME};
+  location /policy/v1/ {
+    proxy_pass              http://policy:8000/policy/v1/;
+    proxy_set_header        Host $host;
+    proxy_set_header        X-Forwarded-Proto $scheme;
+    proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_redirect          off;
+  }
+
+  location /api/EventSink {
+    proxy_pass              http://event-sink:8010/api/EventSink/;
+    proxy_set_header        Host $host;
+    proxy_set_header        X-Forwarded-Proto $scheme;
+    proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_redirect          off;
+  }
+
+  location /api/EventSink/ {
+    proxy_pass              http://event-sink:8010/api/EventSink/;
+    proxy_set_header        Host $host;
+    proxy_set_header        X-Forwarded-Proto $scheme;
+    proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_redirect          off;
+  }
+
+  location /clean/ {
+    proxy_pass              http://event-sink:8010/clean/;
+    proxy_set_header        Host $host;
+    proxy_set_header        X-Forwarded-Proto $scheme;
+    proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_redirect          off;
+  }
+
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/${HOSTNAME}/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/${HOSTNAME}/privkey.pem; # managed by Certbot
+    include /etc/nginx/ssl/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/nginx/ssl/ssl-dhparams.pem;
+}
+
+server {
+  location ^~ /.well-known/acme-challenge/ {
+      root /var/www/certbot/${HOSTNAME};
+  }
+
+  location / {
+      return 301 https://$host$request_uri;
+  } # managed by Certbot
+
+  server_name               .${HOSTNAME};
+  listen                    80;
+}

@@ -1,0 +1,9 @@
+CREATE TABLE IF NOT EXISTS ActiveCalls (
+  callid VARCHAR(255) NOT NULL PRIMARY KEY,
+  conference VARCHAR(255) NOT NULL
+);
+CREATE TABLE IF NOT EXISTS events (
+  id serial NOT NULL PRIMARY KEY,
+  eventtype VARCHAR(255),
+  item json NOT NULL
+);

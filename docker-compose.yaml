@@ -1,0 +1,73 @@
+version: "3.9"
+services:
+  policy:
+    build: ./policy
+    hostname: policy
+    container_name: policy
+    expose:
+      - "8000/tcp"
+    volumes:
+      - ./conference_config.json:/app/project/conference_config.json
+    env_file:
+      - db.env
+    restart: always
+  event-sink:
+    build: ./event-sink
+    hostname: eventsink
+    container_name: eventsink
+    expose:
+      - "8010/tcp"
+    env_file:
+      - db.env
+      - ./event-sink/eventsink.env
+    restart: always
+  nginx:
+    build: ./nginx
+    hostname: nginx
+    container_name: nginx
+    ports:
+      - "80:80/tcp"
+      - "443:443/tcp"
+    volumes:
+      - certs:/etc/letsencrypt
+      - certbot_acme_challenge:/var/www/certbot
+    env_file:
+      - config.env
+    restart: always
+  certbot:
+    build: ./certbot
+    hostname: certbot
+    container_name: certbot
+    volumes:
+      - certs:/etc/letsencrypt
+      - certbot_acme_challenge:/var/www/certbot
+    env_file:
+      - config.env
+    restart: always
+  cron:
+    build: ./cron
+    hostname: cron
+    container_name: cron
+    environment:
+      COMPOSE_PROJECT_NAME: "${COMPOSE_PROJECT_NAME}"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./:/workdir:ro
+    restart: unless-stopped
+  db:
+    build: ./db
+    container_name: db
+    env_file:
+      - db.env
+    volumes:
+      - db:/data/postgres
+      - ./db/create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql
+    ports:
+      - "5432:5432/tcp"
+
+volumes:
+  certs:
+    external: true
+  certbot_acme_challenge:
+  db:
+    driver: local

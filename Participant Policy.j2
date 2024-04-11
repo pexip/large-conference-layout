@@ -1,0 +1,26 @@
+{
+  {% set prov = pex_regex_search('^(?:sip:)?vaprov_([0-9a-zA-Z]{20})(?:@<substitute domain name here>)?$', call_info.local_alias)[0] %}
+  {% set patient = pex_regex_search('^(?:sip:)?va_([0-9a-zA-Z]{20})(?:_vmr(\\d+))?(?:@<substitute domain name here>)?$', call_info.local_alias)[0] %}
+  {% set apicall = 'python-requests' in call_info.vendor %}
+  {% set sipcall = call_info.protocol == 'sip' %}
+  
+  "status" : "success",
+  "action" : "continue",
+ 
+  {% if prov and not sipcall %}
+    "result": {{participant|pex_update({"preauthenticated_role": "chair"})|pex_to_json}}
+
+  {% elif prov and sipcall %}
+    "result": {{participant|pex_update({"preauthenticated_role": "guest"})|pex_to_json}}
+
+  {% elif patient and not apicall%}
+    "result": {{participant|pex_update({"preauthenticated_role": "guest"})|pex_to_json}}
+
+  {% elif patient and apicall%}
+    "result": {{participant|pex_update({"preauthenticated_role": "chair"})|pex_to_json}}
+    
+  {% else %}
+    "result" : {{participant|pex_to_json}}
+
+  {% endif %}
+}

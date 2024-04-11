@@ -1,0 +1,5 @@
+gunicorn
+Django
+requests
+django-csp
+psycopg2
